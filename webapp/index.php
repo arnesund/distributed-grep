@@ -39,10 +39,10 @@ if (($result = ldap_authenticate()) == NULL) {
 }
 
 // Connect to SQLite database
-if ($db = new SQLiteDatabase($DATABASEFILE, 0660, $error)) {
+if ($db = new PDO('sqlite:' + $DATABASEFILE)) {
     $q = @$db->query('SELECT id FROM jobs');
     if ($q === false) {
-        $db->queryExec('CREATE TABLE jobs (
+        $db->exec('CREATE TABLE jobs (
                 id INTEGER PRIMARY KEY,
                 username TEXT NOT NULL,
                 searchterm TEXT NOT NULL,
