@@ -3,10 +3,19 @@ import os
 import sqlite3
 import subprocess
 import time
+import threading
 from datetime import datetime
 from datetime import timedelta
 from dateutil import rrule
 from asynchronousfilereader import AsynchronousFileReader
+
+try:
+    # Python 2
+    from Queue import Queue
+except ImportError:
+    # Python 3
+    from queue import Queue
+
 
 DATADIR = '../database'
 DEBUG = False
