@@ -40,9 +40,9 @@ if (($result = ldap_authenticate()) == NULL) {
 
 // Connect to SQLite database
 try {
-    $db = new PDO('sqlite:' + $DATABASEFILE);
+    $db = new PDO('sqlite:' . $DATABASEFILE);
 } catch (PDOException $e) {
-    die("Unable to connect to database, error: " + $e->getMessage());
+    die("Unable to connect to database, error: " . $e->getMessage());
 }
 
 $q = @$db->query('SELECT id FROM jobs');
