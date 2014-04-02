@@ -154,10 +154,10 @@ for job in res:
     process = subprocess.Popen(startcmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     # Launch the asynchronous readers of the process' stdout and stderr.
-    stdout_queue = Queue.Queue()
+    stdout_queue = Queue()
     stdout_reader = AsynchronousFileReader(process.stdout, stdout_queue)
     stdout_reader.start()
-    stderr_queue = Queue.Queue()
+    stderr_queue = Queue()
     stderr_reader = AsynchronousFileReader(process.stderr, stderr_queue)
     stderr_reader.start()
  
