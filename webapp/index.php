@@ -45,8 +45,10 @@ try {
     die("Unable to connect to database, error: " . $e->getMessage());
 }
 
-$q = @$db->query('SELECT id FROM jobs');
+// Test database for content, initialize table if not found
+$q = $db->exec('SELECT id FROM jobs');
 if ($q === false) {
+    // Initialize job table
     $db->exec('CREATE TABLE jobs (
             id INTEGER PRIMARY KEY,
             username TEXT NOT NULL,
@@ -65,8 +67,7 @@ if ($q === false) {
         );');
     $hits = 1;
 } else {
-    $result = $q->fetchSingle();
-    $hits = $result+1;
+    $hits = $q+1;
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -128,17 +129,17 @@ if (array_key_exists('submit', $_POST)) {
 
     if ($displayform == 0) {
         // Save job to database
-        $res = @$db->queryExec('INSERT INTO jobs (id, username, searchterm, filterterm, ' . 
+        $res = $db->exec('INSERT INTO jobs (id, username, searchterm, filterterm, ' . 
             'devices, timeperiod, postprocessing, created, mapstatus, reducestatus, status) VALUES (NULL, "' . $_SERVER['PHP_AUTH_USER'] . '", "' . 
             $searchterm . '", "' . $filterterm . '", "' . $devicelist . '", "' . 
             $timeperiod . '", "' . $postprocessing . '", DATETIME("now"), 0, 0, "New")');
-        if ( ! $res ) {
+        if ( $res === false ) {
             echo '<body id="main_body" >';
             echo '<h2>An error occured when trying to save job details to database. Please try again.</h2>';
-            die();
+            die("Error: " . print_r($db->errorInfo(), true));
         } else {
-            $query = @$db->query('SELECT id FROM jobs WHERE status="New" ORDER BY created DESC');
-            if ( ! $query ) {
+            $query = $db->query('SELECT id FROM jobs WHERE status="New" ORDER BY created DESC');
+            if ( $query === false ) {
                 echo '<body id="main_body" >';
                 echo '<h2>The job details got stored in database, but an error occured when fetching the ID of the new job from the database. Please try again.</h2>';
             } else {
