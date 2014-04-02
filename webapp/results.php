@@ -75,7 +75,7 @@ if ( $query === false ) {
         ?>
         <center><table>
         <tr><th>Search term:</th><td><?php echo $entry['searchterm']; ?></td></tr>
-        <tr><th>Device list:</th><td><?php echo $entry['devices']; ?></td></tr>
+        <tr><th>Device(s):</th><td><?php echo $entry['devices']; ?></td></tr>
         <tr><th>Time period:</th><td><?php echo $entry['timeperiod']; ?> days back</td></tr>
         <tr><th>Postprocessing:</th><td><?php echo $entry['postprocessing']; ?></td></tr>
         <tr><th>Job started by:</th><td><?php echo $entry['username']; ?></td></tr>
