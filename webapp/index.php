@@ -39,37 +39,35 @@ if (($result = ldap_authenticate()) == NULL) {
 }
 
 // Connect to SQLite database
-if ($db = new PDO('sqlite:' + $DATABASEFILE)) {
-    $q = @$db->query('SELECT id FROM jobs');
-    if ($q === false) {
-        $db->exec('CREATE TABLE jobs (
-                id INTEGER PRIMARY KEY,
-                username TEXT NOT NULL,
-                searchterm TEXT NOT NULL,
-                filterterm TEXT,
-                devices TEXT NOT NULL,
-                timeperiod INTEGER NOT NULL,
-                postprocessing TEXT,
-                created DATETIME,
-                started DATETIME,
-                jobid TEXT,
-                status TEXT,
-                mapstatus REAL,
-                reducestatus REAL,
-                finished DATETIME
-            );');
-        $hits = 1;
-    } else {
-        $result = $q->fetchSingle();
-        $hits = $result+1;
-    }
-} else {
-    $error = (file_exists($DATABASEFILE)) ?
-        "Impossible to open database file, check permissions" : 
-        "Impossible to create database file, check permissions";
-    die($error);
+try {
+    $db = new PDO('sqlite:' + $DATABASEFILE))
+} catch (PDOException $e) {
+    die("Unable to connect to database, error: " + $e);
 }
 
+$q = @$db->query('SELECT id FROM jobs');
+if ($q === false) {
+    $db->exec('CREATE TABLE jobs (
+            id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            searchterm TEXT NOT NULL,
+            filterterm TEXT,
+            devices TEXT NOT NULL,
+            timeperiod INTEGER NOT NULL,
+            postprocessing TEXT,
+            created DATETIME,
+            started DATETIME,
+            jobid TEXT,
+            status TEXT,
+            mapstatus REAL,
+            reducestatus REAL,
+            finished DATETIME
+        );');
+    $hits = 1;
+} else {
+    $result = $q->fetchSingle();
+    $hits = $result+1;
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
