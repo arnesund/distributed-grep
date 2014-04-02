@@ -17,25 +17,27 @@ except ImportError:
     from queue import Queue
 
 
+DEBUG = True
+
+# Paths
 DATADIR = '../database'
-DEBUG = False
+details = {}
+details['HADOOP_BIN'] = '/usr/local/hadoop'
+details['HADOOP_CONTRIB'] = '/usr/local/hadoop'
+details['JOBSCRIPT_DIR'] = '../jobscripts'
 
 # Connect to database
 db = sqlite3.connect(DATADIR + '/hadoopjobs.db')
 cur = db.cursor()
 
+# Template for job launch command
 startcmd = '''
-HADOOP_BIN/hadoop jar HADOOP_CONTRIB/contrib/streaming/hadoop-streaming*.jar \
+HADOOP_BIN/bin/hadoop jar HADOOP_CONTRIB/contrib/streaming/hadoop-streaming*.jar \
 -Dmapred.job.name="Distributed Grep: HadoopOnDemand job JOBID" \
 -Dmapred.reduce.tasks=1 \
 -Dmapred.job.priority=VERY_HIGH \
 -mapper "JOBSCRIPT_DIR/egrepwrapper.sh 'SEARCHSTRING'" \
 '''
-
-details = {}
-details['HADOOP_BIN'] = '/usr/bin'
-details['HADOOP_CONTRIB'] = '/usr/share/hadoop'
-details['JOBSCRIPT_DIR'] = '../jobscripts'
 
 
 def process_job_output(db, cur, jobid, line):
