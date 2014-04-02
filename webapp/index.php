@@ -40,7 +40,7 @@ if (($result = ldap_authenticate()) == NULL) {
 
 // Connect to SQLite database
 try {
-    $db = new PDO('sqlite:' . $DATABASEFILE);
+    $db = new PDO('sqlite2:' . $DATABASEFILE);
 } catch (PDOException $e) {
     die("Unable to connect to database, error: " . $e->getMessage());
 }
