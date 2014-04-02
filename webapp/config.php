@@ -16,7 +16,7 @@ $ldapconfig['authrealm'] = 'LDAP';
 $ldapconfig['helpdesk'] = 'MAIL@ADDRESS.HERE';
 
 // Name and path of sqlite database
-$DATABASEFILE = 'hadoopjobs.db';
+$DATABASEFILE = '../database/hadoopjobs.db';
 
 // Web UI settings
 $PAGE_TITLE = 'Distributed Grep';
