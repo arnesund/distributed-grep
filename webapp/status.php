@@ -80,7 +80,7 @@ if ( ! $query ) {
         echo "<tr><td>&nbsp;</td><td>";
         echo "</table></center>";
         if ($entry['status'] == 'New') {
-            echo "<center>Please wait for the job to start on the cluster.<br />There is some delay due to the use of a job launcher run by cronjob once every minute.</center>";
+            echo "<center>Please wait for the job to start on the cluster.<br />There is some delay due to the use of a job launcher run by cron once every 60 seconds.</center>";
         } else if ($entry['status'] == 'Running') {
             echo "<center>You will be redirected to the results page when the job finishes.</center>";
         } else if ($entry['status'] == 'Failed') {
