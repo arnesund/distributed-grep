@@ -39,11 +39,10 @@ if (($result = ldap_authenticate()) == NULL) {
 }
 
 // Connect to SQLite database
-if (!$db = new SQLiteDatabase($DATABASEFILE, 0660, $error)) {
-    $error = (file_exists($DATABASEFILE)) ?
-        "Impossible to open database file, check permissions" : 
-        "Impossible to create database file, check permissions";
-    die($error);
+try {
+    $db = new PDO('sqlite:' . $DATABASEFILE);
+} catch (PDOException $e) {
+    die("Unable to connect to database, error: " . $e->getMessage());
 }
 
 ?>
@@ -63,20 +62,20 @@ $jobid = $_GET['jobid'];
 if (!is_numeric($jobid))
     die('Job ID is not numeric, please try again!');
 
-$query = @$db->query('SELECT username, searchterm, filterterm, ' . 
+$query = $db->query('SELECT username, searchterm, filterterm, ' . 
     'devices, timeperiod, postprocessing, created, started, status, ' .
     'jobid, mapstatus, reducestatus, finished FROM jobs WHERE id=' . $jobid);
 
-if ( ! $query ) {
+if ( $query === false ) {
     die('Found no job in database with supplied ID. Please try again.');
 } else {
     echo "<h2>Search results for job $jobid</h2>";
-    $entry = $query->fetch(SQLITE_ASSOC);
+    $entry = $query->fetch();
     if ($entry['status'] == 'Complete') {
         ?>
         <center><table>
         <tr><th>Search term:</th><td><?php echo $entry['searchterm']; ?></td></tr>
-        <tr><th>Device list:</th><td><?php echo $entry['devices']; ?></td></tr>
+        <tr><th>Device(s):</th><td><?php echo $entry['devices']; ?></td></tr>
         <tr><th>Time period:</th><td><?php echo $entry['timeperiod']; ?> days back</td></tr>
         <tr><th>Postprocessing:</th><td><?php echo $entry['postprocessing']; ?></td></tr>
         <tr><th>Job started by:</th><td><?php echo $entry['username']; ?></td></tr>

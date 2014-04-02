@@ -39,37 +39,36 @@ if (($result = ldap_authenticate()) == NULL) {
 }
 
 // Connect to SQLite database
-if ($db = new SQLiteDatabase($DATABASEFILE, 0660, $error)) {
-    $q = @$db->query('SELECT id FROM jobs');
-    if ($q === false) {
-        $db->queryExec('CREATE TABLE jobs (
-                id INTEGER PRIMARY KEY,
-                username TEXT NOT NULL,
-                searchterm TEXT NOT NULL,
-                filterterm TEXT,
-                devices TEXT NOT NULL,
-                timeperiod INTEGER NOT NULL,
-                postprocessing TEXT,
-                created DATETIME,
-                started DATETIME,
-                jobid TEXT,
-                status TEXT,
-                mapstatus REAL,
-                reducestatus REAL,
-                finished DATETIME
-            );');
-        $hits = 1;
-    } else {
-        $result = $q->fetchSingle();
-        $hits = $result+1;
-    }
-} else {
-    $error = (file_exists($DATABASEFILE)) ?
-        "Impossible to open database file, check permissions" : 
-        "Impossible to create database file, check permissions";
-    die($error);
+try {
+    $db = new PDO('sqlite:' . $DATABASEFILE);
+} catch (PDOException $e) {
+    die("Unable to connect to database, error: " . $e->getMessage());
 }
 
+// Test database for content, initialize table if not found
+$q = $db->exec('SELECT id FROM jobs');
+if ($q === false) {
+    // Initialize job table
+    $db->exec('CREATE TABLE jobs (
+            id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            searchterm TEXT NOT NULL,
+            filterterm TEXT,
+            devices TEXT NOT NULL,
+            timeperiod INTEGER NOT NULL,
+            postprocessing TEXT,
+            created DATETIME,
+            started DATETIME,
+            jobid TEXT,
+            status TEXT,
+            mapstatus REAL,
+            reducestatus REAL,
+            finished DATETIME
+        );');
+    $hits = 1;
+} else {
+    $hits = $q+1;
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -130,21 +129,21 @@ if (array_key_exists('submit', $_POST)) {
 
     if ($displayform == 0) {
         // Save job to database
-        $res = @$db->queryExec('INSERT INTO jobs (id, username, searchterm, filterterm, ' . 
+        $res = $db->exec('INSERT INTO jobs (id, username, searchterm, filterterm, ' . 
             'devices, timeperiod, postprocessing, created, mapstatus, reducestatus, status) VALUES (NULL, "' . $_SERVER['PHP_AUTH_USER'] . '", "' . 
             $searchterm . '", "' . $filterterm . '", "' . $devicelist . '", "' . 
             $timeperiod . '", "' . $postprocessing . '", DATETIME("now"), 0, 0, "New")');
-        if ( ! $res ) {
+        if ( $res === false ) {
             echo '<body id="main_body" >';
             echo '<h2>An error occured when trying to save job details to database. Please try again.</h2>';
-            die();
+            die("Error: " . print_r($db->errorInfo(), true));
         } else {
-            $query = @$db->query('SELECT id FROM jobs WHERE status="New" ORDER BY created DESC');
-            if ( ! $query ) {
+            $query = $db->query('SELECT id FROM jobs WHERE status="New" ORDER BY created DESC');
+            if ( $query === false ) {
                 echo '<body id="main_body" >';
                 echo '<h2>The job details got stored in database, but an error occured when fetching the ID of the new job from the database. Please try again.</h2>';
             } else {
-                $entry = $query->fetch(SQLITE_ASSOC);
+                $entry = $query->fetch();
                 $jobid = $entry['id'];
                 echo '<body id="main_body" onLoad="setTimeout(\'delayer(' . $jobid . ')\', 5000)">';
                 echo '<h2>Search job ' . $jobid . ' started.</h2><p>In a few seconds you are redirected to status page for job.</p>';

@@ -1,32 +1,43 @@
 #!/usr/bin/env python
 import os
-import sqlite
+import sqlite3
 import subprocess
 import time
+import threading
 from datetime import datetime
 from datetime import timedelta
 from dateutil import rrule
 from asynchronousfilereader import AsynchronousFileReader
 
-DATADIR = '/var/www/search'
-DEBUG = False
+try:
+    # Python 2
+    from Queue import Queue
+except ImportError:
+    # Python 3
+    from queue import Queue
+
+
+DEBUG = True
+
+# Paths
+DATADIR = '../database'
+details = {}
+details['HADOOP_BIN'] = '/usr/local/hadoop'
+details['HADOOP_CONTRIB'] = '/usr/local/hadoop'
+details['JOBSCRIPT_DIR'] = '../jobscripts'
 
 # Connect to database
-db = sqlite.connect(DATADIR + '/hadoopjobs.db')
+db = sqlite3.connect(DATADIR + '/hadoopjobs.db')
 cur = db.cursor()
 
+# Template for job launch command
 startcmd = '''
-HADOOP_BIN/hadoop jar HADOOP_CONTRIB/contrib/streaming/hadoop-streaming*.jar \
+HADOOP_BIN/bin/hadoop jar HADOOP_CONTRIB/contrib/streaming/hadoop-streaming*.jar \
 -Dmapred.job.name="Distributed Grep: HadoopOnDemand job JOBID" \
 -Dmapred.reduce.tasks=1 \
 -Dmapred.job.priority=VERY_HIGH \
 -mapper "JOBSCRIPT_DIR/egrepwrapper.sh 'SEARCHSTRING'" \
 '''
-
-details = {}
-details['HADOOP_BIN'] = '/usr/bin'
-details['HADOOP_CONTRIB'] = '/usr/share/hadoop'
-details['JOBSCRIPT_DIR'] = '../jobscripts'
 
 
 def process_job_output(db, cur, jobid, line):
@@ -145,10 +156,10 @@ for job in res:
     process = subprocess.Popen(startcmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     # Launch the asynchronous readers of the process' stdout and stderr.
-    stdout_queue = Queue.Queue()
+    stdout_queue = Queue()
     stdout_reader = AsynchronousFileReader(process.stdout, stdout_queue)
     stdout_reader.start()
-    stderr_queue = Queue.Queue()
+    stderr_queue = Queue()
     stderr_reader = AsynchronousFileReader(process.stderr, stderr_queue)
     stderr_reader.start()
  
