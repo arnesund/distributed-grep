@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-import sqlite
+import sqlite3
 import subprocess
 import time
 from datetime import datetime
@@ -8,11 +8,11 @@ from datetime import timedelta
 from dateutil import rrule
 from asynchronousfilereader import AsynchronousFileReader
 
-DATADIR = '/var/www/search'
+DATADIR = '../database'
 DEBUG = False
 
 # Connect to database
-db = sqlite.connect(DATADIR + '/hadoopjobs.db')
+db = sqlite3.connect(DATADIR + '/hadoopjobs.db')
 cur = db.cursor()
 
 startcmd = '''
