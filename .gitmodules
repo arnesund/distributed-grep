@@ -1,0 +1,3 @@
+[submodule "externals/asyncfilereader"]
+	path = externals/asyncfilereader
+	url = git://github.com/soxofaan/asynchronousfilereader
