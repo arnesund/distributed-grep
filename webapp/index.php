@@ -143,7 +143,7 @@ if (array_key_exists('submit', $_POST)) {
                 echo '<body id="main_body" >';
                 echo '<h2>The job details got stored in database, but an error occured when fetching the ID of the new job from the database. Please try again.</h2>';
             } else {
-                $entry = $query->fetch(SQLITE_ASSOC);
+                $entry = $query->fetch();
                 $jobid = $entry['id'];
                 echo '<body id="main_body" onLoad="setTimeout(\'delayer(' . $jobid . ')\', 5000)">';
                 echo '<h2>Search job ' . $jobid . ' started.</h2><p>In a few seconds you are redirected to status page for job.</p>';
