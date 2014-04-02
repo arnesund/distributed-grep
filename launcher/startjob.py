@@ -26,7 +26,7 @@ HADOOP_BIN/hadoop jar HADOOP_CONTRIB/contrib/streaming/hadoop-streaming*.jar \
 details = {}
 details['HADOOP_BIN'] = '/usr/bin'
 details['HADOOP_CONTRIB'] = '/usr/share/hadoop'
-details['JOBSCRIPT_DIR'] = '/root/NMS/HadoopJobs/FirewallAnalysis/DistributedGrep'
+details['JOBSCRIPT_DIR'] = '../jobscripts'
 
 
 def process_job_output(db, cur, jobid, line):
