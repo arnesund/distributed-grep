@@ -5,11 +5,10 @@ require 'config.php';
 // No need to LDAP authenticate for this page, as long as search form and result page have authentication.
 
 // Connect to SQLite database
-if (!$db = new SQLiteDatabase($DATABASEFILE, 0660, $error)) {
-    $error = (file_exists($DATABASEFILE)) ?
-        "Impossible to open database file, check permissions" : 
-        "Impossible to create database file, check permissions";
-    die($error);
+try {
+    $db = new PDO('sqlite:' . $DATABASEFILE);
+} catch (PDOException $e) {
+    die("Unable to connect to database, error: " . $e->getMessage());
 }
 
 ?>
@@ -31,16 +30,16 @@ $jobid = $_GET['jobid'];
 if (!is_numeric($jobid))
     die('Job ID is not numeric, please try again!');
 
-$query = @$db->query('SELECT username, searchterm, filterterm, ' . 
+$query = $db->query('SELECT username, searchterm, filterterm, ' . 
     'devices, timeperiod, postprocessing, created, started, status, ' .
     'jobid, mapstatus, reducestatus, finished FROM jobs WHERE id=' . $jobid);
 
-if ( ! $query ) {
+if ( $query === false ) {
     die('Found no job in database with supplied ID. Please try again.');
 } else {
     echo "<h2>Status for search job $jobid</h2>";
     
-    while ($entry = $query->fetch(SQLITE_ASSOC)) {
+    while ($entry = $query->fetch()) {
         echo "<center><table>";
         echo "<tr><td><b>Status:</b></td><td><center><b>" . $entry['status'] . "</b></center></td></tr>";
         if ($entry['status'] == 'Complete') {
