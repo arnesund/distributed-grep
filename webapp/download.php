@@ -70,7 +70,7 @@ if ( $query === false ) {
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        $ch = curl_init("http://" . $NAMENODE . ":" . $HDFS_WEB_PORT . "/webhdfs/v1" . $HDFS_PATH . "?op=OPEN");
+        $ch = curl_init("http://" . $NAMENODE_HOST . ":" . $HDFS_WEB_PORT . "/webhdfs/v1" . $HDFS_PATH . "?op=OPEN");
         // Get file contents and dump to browser as a download
         $res = curl_exec($ch);
         curl_close($ch);
