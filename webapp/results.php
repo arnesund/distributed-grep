@@ -62,7 +62,7 @@ $jobid = $_GET['jobid'];
 if (!is_numeric($jobid))
     die('Job ID is not numeric, please try again!');
 
-$query = $db->query('SELECT username, searchterm, filterterm, ' . 
+$query = $db->query('SELECT id, username, searchterm, filterterm, ' . 
     'devices, timeperiod, postprocessing, created, started, status, ' .
     'jobid, mapstatus, reducestatus, finished FROM jobs WHERE id=' . $jobid);
 
