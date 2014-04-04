@@ -46,7 +46,7 @@ if ( $query === false ) {
             ?>
             <script type="text/javascript">
             <!--
-                window.location = "/search/results.php?jobid=<?php echo $jobid; ?>"
+                window.location = "results.php?jobid=<?php echo $jobid; ?>"
             //-->
             </script>
             <?php
