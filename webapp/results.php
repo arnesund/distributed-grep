@@ -86,6 +86,7 @@ if ( $query === false ) {
         <?php
 
         // Print search results to screen
+        $HDFS_PATH = "/user/" . $HADOOP_USER . "/ondemand-" . $entry['id'] . "/part-00000";
         $ch = curl_init("http://" . $NAMENODE_HOST . ":" . $HDFS_WEB_PORT . "/webhdfs/v1" . $HDFS_PATH . "?op=OPEN");
         $res = curl_exec($ch);
 //        system("hadoop dfs -cat /user/" . $HADOOP_USER . "/ondemand-" . $jobid . "/part-00000");
