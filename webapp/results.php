@@ -82,8 +82,7 @@ if ( $query === false ) {
         <tr><th>Job finished at:</th><td><?php echo $entry['finished']; ?></td></tr>
         </table></center>
         <p><center><a href='download.php?jobid=<?php echo $jobid; ?>'>Download result file</a></center></p>
-        <p><pre align='left'>
-        <?php
+        <p><pre align='left'><?php
 
         // Print search results to screen
         $HDFS_PATH = "/user/" . $HADOOP_USER . "/ondemand-" . $entry['id'] . "/part-00000";
