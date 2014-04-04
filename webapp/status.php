@@ -83,7 +83,7 @@ if ( $query === false ) {
         } else if ($entry['status'] == 'Running') {
             echo "<center>You will be redirected to the results page when the job finishes.</center>";
         } else if ($entry['status'] == 'Failed') {
-            echo "<center><h2><font color='red'>Search job failed!</font></h2><br />To debug job failure, go to the <a href='" . $JOBTRACKER_URL . "/jobdetails.jsp?jobid=" . $entry['jobid'] . "'>status page for the job</a> and drill down to job logs for Failed/Killed Task Attempts.</center>";
+            echo "<center><h2><font color='red'>Search job failed!</font></h2><br />To debug job failure, go to the <a href='http://" . $JOBTRACKER_HOST . ":" . $JOBTRACKER_PORT . "/jobdetails.jsp?jobid=" . $entry['jobid'] . "'>status page for the job</a> and drill down to job logs for Failed/Killed Task Attempts.</center>";
         }
     }
     

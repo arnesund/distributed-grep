@@ -81,12 +81,17 @@ if ( $query === false ) {
         <tr><th>Job started by:</th><td><?php echo $entry['username']; ?></td></tr>
         <tr><th>Job finished at:</th><td><?php echo $entry['finished']; ?></td></tr>
         </table></center>
+        <p><center><a href='download.php?jobid=<?php echo $jobid; ?>'>Download result file</a></center></p>
+        <p><pre align='left'>
         <?php
-        echo "<p><center>To download results, <a href='" . $FILESYSTEM_BROWSE_URL . "/browseDirectory.jsp?dir=%2Fuser%2F" . $HADOOP_USER . "%2Fondemand-" . $jobid . "&namenodeInfoPort=50070'>get the result file (part-00000) here</a>.</center></p>";
-        echo "<p><pre align='left'>";
+
         // Print search results to screen
-        system("hadoop dfs -cat /user/" . $HADOOP_USER . "/ondemand-" . $jobid . "/part-00000");
+        $ch = curl_init("http://" . $NAMENODE_HOST . ":" . $HDFS_WEB_PORT . "/webhdfs/v1" . $HDFS_PATH . "?op=OPEN");
+        $res = curl_exec($ch);
+//        system("hadoop dfs -cat /user/" . $HADOOP_USER . "/ondemand-" . $jobid . "/part-00000");
         echo "</pre></p>";
+        curl_close($ch);
+
     } else {
         echo "<b>The job has not finished yet, please wait. <a href='status.php?jobid=" . $jobid . "'>Check status here</a>.</b>";
     }

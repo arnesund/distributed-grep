@@ -25,8 +25,10 @@ $DEVICES_PER_COLUMN = 8;
 
 // Hadoop cluster paths
 // NOTE: Hadoop v1-specific, newer versions may require code changes.
-$JOBTRACKER_URL = 'http://HADOOP-MASTER-HOST:50030';
-$FILESYSTEM_BROWSE_URL = 'http://A-HADOOP-SLAVE-HOST:50075';
+$JOBTRACKER_HOST = 'HOSTNAME.HERE';
+$JOBTRACKER_PORT = '50030';
+$NAMENODE_HOST = 'HOSTNAME.HERE';
+$HDFS_WEB_PORT = '50075';
 
 // User account startjob.py is running as (run by cron)
 $HADOOP_USER = 'root';
