@@ -17,7 +17,7 @@ except ImportError:
     from queue import Queue
 
 
-DEBUG = True
+DEBUG = False
 
 # Paths
 DATADIR = '../database'
